@@ -1,7 +1,7 @@
 class CreateCustomCopyToField < ActiveRecord::Migration[5.2]
   def self.up
     c = CustomField.new(
-      :name => 'copy-to',
+      :name => 'CC Email',
       :editable => true,
       :field_format => 'string')
     c.type = 'IssueCustomField' # cannot be set by mass assignement!
@@ -12,7 +12,7 @@ class CreateCustomCopyToField < ActiveRecord::Migration[5.2]
   end
 
   def self.down
-    c = CustomField.find_by_name('copy-to')
+    c = CustomField.find_by_name('CC Email')
     execute "DELETE FROM custom_fields_trackers WHERE custom_field_id=#{c.id}"
     c.delete
   end

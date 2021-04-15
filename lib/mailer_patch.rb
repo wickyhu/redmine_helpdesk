@@ -12,7 +12,7 @@ module RedmineHelpdesk
     module InstanceMethods
       # Overrides the issue_edit method which is only
       # be called on existing tickets. We will add the
-      # owner-email to the recipients only if no email-
+      # User Email to the recipients only if no email-
       # footer text is available.
       def issue_edit_with_helpdesk(user, journal)
         issue = journal.journalized
@@ -33,19 +33,19 @@ module RedmineHelpdesk
           journal.save(:validate => false)
         end
 
-        # add owner-email to the recipients
+        # add User Email to the recipients
         alternative_user = nil
         begin
           if journal.send_to_owner == true
             f = CustomField.find_by_name('helpdesk-email-footer')
             p = issue.project
-            owner_email = issue.custom_value_for( CustomField.find_by_name('owner-email') ).value
+            owner_email = issue.custom_value_for( CustomField.find_by_name('User Email') ).value
             if !owner_email.blank? && !f.nil? && !p.nil? && p.custom_value_for(f).try(:value).blank?
               alternative_user = owner_email
             end
           end
         rescue Exception => e
-          mylogger.error "Error while adding owner-email to recipients of email notification: \"#{e.message}\"."
+          mylogger.error "Error while adding User Email to recipients of email notification: \"#{e.message}\"."
         end
 
         # any cc handling needed?

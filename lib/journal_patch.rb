@@ -25,7 +25,7 @@ module RedmineHelpdesk
         # only if the send_to_owner checkbox was checked
         if send_to_owner == true && notes.length != 0
           issue = self.journalized.reload
-          owner_email = issue.custom_value_for( CustomField.find_by_name('owner-email') ).value
+          owner_email = issue.custom_value_for( CustomField.find_by_name('User Email') ).value
           HelpdeskMailer.email_to_supportclient(
             issue, {
               recipient: owner_email,

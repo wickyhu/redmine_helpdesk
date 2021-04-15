@@ -1,6 +1,6 @@
 ---
 custom_fields_001:
-  name: owner-email
+  name: User Email
   regexp: ""
   type: IssueCustomField
   possible_values: ""
@@ -112,7 +112,7 @@ custom_fields_009:
   editable: true
   position: 2
 custom_fields_010:
-  name: copy-to
+  name: CC Email
   regexp: ""
   type: IssueCustomField
   possible_values: ""

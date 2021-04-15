@@ -43,7 +43,7 @@ class HelpdeskMailer < ActionMailer::Base
     reply  = p.nil? || r.nil? ? '' : p.custom_value_for(r).try(:value)
     footer = p.nil? || f.nil? ? '' : p.custom_value_for(f).try(:value)
     # add carbon copy
-    ct = CustomField.find_by_name('copy-to')
+    ct = CustomField.find_by_name('CC Email')
     if carbon_copy.nil?
       carbon_copy = issue.custom_value_for(ct).try(:value)
     end

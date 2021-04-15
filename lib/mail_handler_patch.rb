@@ -15,7 +15,7 @@ module RedmineHelpdesk
     module InstanceMethods
       private
       # Overrides the dispatch_to_default method to
-      # set the owner-email of a new issue created by
+      # set the User Email of a new issue created by
       # an email request
       def dispatch_to_default_with_helpdesk
         issue = receive_issue
@@ -24,7 +24,7 @@ module RedmineHelpdesk
         else
           issue.author.roles_for_project(issue.project)
         end
-        # add owner-email only if the author has assigned some role with
+        # add User Email only if the author has assigned some role with
         # permission treat_user_as_supportclient enabled
         if issue.author.type.eql?("AnonymousUser") || roles.any? {|role| role.allowed_to?(:treat_user_as_supportclient) }
           sender_email = @email.from.first
@@ -33,7 +33,7 @@ module RedmineHelpdesk
           custom_value = custom_field_value(issue.project,'cc-handling')
           if (!@email.cc.nil?) && (custom_value.value == '1')
             carbon_copy = @email[:cc].formatted.join(', ')
-            custom_value = custom_field_value(issue,'copy-to')
+            custom_value = custom_field_value(issue,'CC Email')
             custom_value.value = carbon_copy
             custom_value.save(:validate => false)
           else
@@ -43,7 +43,7 @@ module RedmineHelpdesk
           issue.description = email_details + issue.description
           issue.save
 
-          custom_value = custom_field_value(issue,'owner-email')
+          custom_value = custom_field_value(issue,'User Email')
           if custom_value.value.to_s.strip.empty?
             custom_value.value = sender_email
             custom_value.save(:validate => false) # skip validation!

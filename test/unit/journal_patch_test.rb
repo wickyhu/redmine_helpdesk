@@ -46,7 +46,7 @@ class JournalPatchTest < ActiveSupport::TestCase
 
     issue = Issue.find(1)
     journal = issue.journals.first
-    owner_field = CustomField.find_by_name('owner-email')
+    owner_field = CustomField.find_by_name('User Email')
     owner_value = CustomValue.where(
       "customized_id = ? AND custom_field_id = ?", issue.id, owner_field.id).
       first

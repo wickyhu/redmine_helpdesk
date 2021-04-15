@@ -1,6 +1,6 @@
 # Redmine Helpdesk
 
-Lightweight helpdesk plugin for redmine. Adds the email sender-address of an anonymous supportclient to the custom field 'owner-email' of a ticket which was created by a support email. Answers can be send to the supportclient by checking the support checkbox on a journal.
+Lightweight helpdesk plugin for redmine. Adds the email sender-address of an anonymous supportclient to the custom field 'User Email' of a ticket which was created by a support email. Answers can be send to the supportclient by checking the support checkbox on a journal.
 
 ## Features
 
@@ -46,7 +46,7 @@ To install the plugin clone the repo from github and migrate the database:
 
 ```
 cd /path/to/redmine/
-git clone git://github.com/jfqd/redmine_helpdesk.git plugins/redmine_helpdesk
+git clone https://github.com/wickyhu/redmine_helpdesk.git plugins/redmine_helpdesk
 bundle install --without development test rmagick
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 ```
@@ -65,7 +65,7 @@ Further information about plugin installation can be found at: https://www.redmi
 
 To use the helpdesk functionality you need to
 
-* add the custom field 'owner-email' to a project in the project configuration
+* add the custom field 'User Email' to a project in the project configuration
 * add a standard first reply message into the custom_field 'helpdesk-first-reply' in the project configuration (optional)
 * add an email-footer into the custom_field 'helpdesk-email-footer' in the project configuration
 * add a sender email address into the custom_field 'helpdesk-sender-email' in the project configuration (optional)

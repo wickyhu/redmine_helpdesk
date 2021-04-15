@@ -24,7 +24,7 @@ class MailHandlerPatchTest < ActiveSupport::TestCase
                          :no_permission_check => 1)
     assert_issue_created issue
 
-    owner_field = CustomField.find_by_name('owner-email')
+    owner_field = CustomField.find_by_name('User Email')
     owner_value = CustomValue.where(
       "customized_id = ? AND custom_field_id = ?", issue.id, owner_field.id).
       first
@@ -44,7 +44,7 @@ class MailHandlerPatchTest < ActiveSupport::TestCase
                        :no_permission_check => 1)
       assert_issue_created issue
 
-      owner_field = CustomField.find_by_name('owner-email')
+      owner_field = CustomField.find_by_name('User Email')
       owner_value = CustomValue.where(
           "customized_id = ? AND custom_field_id = ?", issue.id, owner_field.id).
           first
@@ -63,7 +63,7 @@ class MailHandlerPatchTest < ActiveSupport::TestCase
                        :no_permission_check => 1)
       assert_issue_created issue
 
-      owner_field = CustomField.find_by_name('owner-email')
+      owner_field = CustomField.find_by_name('User Email')
       owner_value = CustomValue.where(
           "customized_id = ? AND custom_field_id = ?", issue.id, owner_field.id).
           first
@@ -84,11 +84,11 @@ class MailHandlerPatchTest < ActiveSupport::TestCase
                        :no_permission_check => 1)
       assert_issue_created issue
 
-      owner_field = CustomField.find_by_name('owner-email')
+      owner_field = CustomField.find_by_name('User Email')
       owner_value = CustomValue.where(
           "customized_id = ? AND custom_field_id = ?", issue.id, owner_field.id).
           first
-      copy_to_field = CustomField.find_by_name('copy-to')
+      copy_to_field = CustomField.find_by_name('CC Email')
       copy_to_value = CustomValue.where(
           "customized_id = ? AND custom_field_id = ?", issue.id, copy_to_field.id).
           first
@@ -108,7 +108,7 @@ class MailHandlerPatchTest < ActiveSupport::TestCase
                          :no_permission_check => 1)
     assert_issue_created issue
 
-    owner_field = CustomField.find_by_name('owner-email')
+    owner_field = CustomField.find_by_name('User Email')
     owner_value = CustomValue.where(
       "customized_id = ? AND custom_field_id = ?", issue.id, owner_field.id).
       first
