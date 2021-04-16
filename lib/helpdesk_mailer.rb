@@ -67,7 +67,16 @@ class HelpdeskMailer < ActionMailer::Base
         if d.property == 'attachment'
           a = Attachment.find(d.prop_key)
           begin
-            attachments[a.filename] = File.binread(a.diskfile)
+	    #wicky.sn
+            #attachments[a.filename] = File.binread(a.diskfile)
+		    if ['image/png', 'image/jpg', 'image/gif', 'image/jpeg'].include? a.content_type
+              attachments.inline[a.filename] = File.read(a.diskfile)
+              image_url = attachments.inline[a.filename].url
+              text = text.gsub("!#{a.filename}!", "<img src='#{image_url}' />")
+            else
+              attachments[a.filename] = File.read(a.diskfile)
+            end
+	    #wicky.en
           rescue
             # ignore rescue
           end
