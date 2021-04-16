@@ -41,7 +41,10 @@ module RedmineHelpdesk
             p = issue.project
             owner_email = issue.custom_value_for( CustomField.find_by_name('User Email') ).value
             if !owner_email.blank? && !f.nil? && !p.nil? && p.custom_value_for(f).try(:value).blank?
-              alternative_user = owner_email
+	      #wicky.sn
+              #alternative_user = owner_email
+	      alternative_user = User.new({:firstname => "Anonymous", :lastname=>"User",:mail=>owner_email})
+	      #wicky.en
             end
           end
         rescue Exception => e
