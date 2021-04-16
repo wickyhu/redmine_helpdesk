@@ -6,7 +6,7 @@ class CreateCustomFieldForReplySeparator < ActiveRecord::Migration[5.2]
         :editable => true,
         :visible => false,          # do not show it on the project summary page
         :field_format => 'string',
-        :default_value => '-- Reply above this line --')
+        :default_value => '------ Please reply above this line ------')
       c.type = 'ProjectCustomField'
       c.save
     rescue

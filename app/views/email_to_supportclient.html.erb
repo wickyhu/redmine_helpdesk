@@ -1,0 +1,25 @@
+<style>a:link{color:#169} a:visited{color:#169} a:hover{color:#c61a1a} a:active{color:#c61a1a}</style>
+<%= raw(@body) %>
+<hr/>
+<% issue = @issue %>
+<% issue_url = @issue_url %>
+<h3>
+  <%= link_to("#{issue.tracker.name} ##{issue.id}: #{issue.subject}", issue_url) %>
+</h3>
+
+<ul class='details' style='color:#959595;margin-bottom:1em'>
+<li><strong>Author: </strong><%= issue.author %></li>
+<li><strong>Status: </strong><%= issue.status %></li>
+<li><strong>Priority: </strong><%= issue.priority %></li>
+<li><strong>Assignee: </strong><%= issue.assigned_to %></li>
+<li><strong>Category: </strong><%= issue.category %></li>
+</ul>
+
+<% if issue.attachments.any? %>
+  <fieldset class="attachments"><legend><%= l(:label_attachment_plural) %></legend>
+  <% issue.attachments.each do |attachment| %>
+    <%= link_to_attachment attachment, :download => true, :only_path => false %>
+    (<%= number_to_human_size(attachment.filesize) %>)<br />
+  <% end %>
+  </fieldset>
+<% end %>

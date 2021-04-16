@@ -7,7 +7,10 @@ class HelpdeskMailer < ActionMailer::Base
   helper :application
 
   include Redmine::I18n
-  include MacroExpander
+  include MacroExpander  
+  #wicky.sn
+  include ApplicationHelper
+  #wicky.en
 
   # set the hostname for url_for helper
   def self.default_url_options
@@ -30,7 +33,11 @@ class HelpdeskMailer < ActionMailer::Base
     message_id issue
     references issue
 
-    subject = "[#{issue.project.name} - ##{issue.id}] #{issue.subject}"
+    #wicky.start
+    #subject = "[#{issue.project.name} - ##{issue.id}] #{issue.subject}"
+    subject = "[#{issue.project.name} - ##{issue.id}] (#{issue.status}) #{issue.subject}"
+    #wicky.end
+	
     # Set 'from' email-address to 'helpdesk-sender-email' if available.
     # Falls back to regular redmine behaviour if 'sender' is empty.
     p = issue.project
@@ -40,8 +47,15 @@ class HelpdeskMailer < ActionMailer::Base
     # available then use this one instead of the regular
     r = CustomField.find_by_name('helpdesk-first-reply')
     f = CustomField.find_by_name('helpdesk-email-footer')
+	
     reply  = p.nil? || r.nil? ? '' : p.custom_value_for(r).try(:value)
     footer = p.nil? || f.nil? ? '' : p.custom_value_for(f).try(:value)
+	
+	#wicky.sn
+	h = CustomField.find_by_name('helpdesk-send-html-emails')
+	send_html_emails = p.nil? || h.nil? ? '' : p.custom_value_for(h).true?
+	#wicky.en
+	
     # add carbon copy
     ct = CustomField.find_by_name('CC Email')
     if carbon_copy.nil?
@@ -66,12 +80,13 @@ class HelpdeskMailer < ActionMailer::Base
     if @references_objects
       headers[:references] = @references_objects.collect {|o| "<#{self.class.references_for(o)}>"}.join(' ')
     end
+
     # create mail object to deliver
-    mail = if text.present? || reply.present?
+    mail = if text.present? || reply.present? 
       # sending out the journal note to the support client
       # or the first reply message
       t = text.present? ? "#{text}\n\n#{footer}" : reply
-      body = expand_macros(t, issue, journal)
+      body = expand_macros(t, issue, journal) 
 
       # precess reply-separator
       f = CustomField.find_by_name('helpdesk-reply-separator')
@@ -80,6 +95,17 @@ class HelpdeskMailer < ActionMailer::Base
         body = reply_separator + "\n\n" + body
       end
 
+	
+	#wicky.start 
+	if send_html_emails
+		@body = body.gsub("\n","<br/>")
+		body = nil
+		@issue = issue
+		@journal = journal
+		@issue_url = url_for(:controller => 'issues', :action => 'show', :id => issue)
+	end
+	#wicky.end
+
       mail(
         :from     => sender.present? && sender || Setting.mail_from,
         :reply_to => sender.present? && sender || Setting.mail_from,
@@ -87,6 +113,10 @@ class HelpdeskMailer < ActionMailer::Base
         :subject  => subject,
         :body     => body,
         :date     => Time.zone.now,
+	#wicky.sn
+        :template_path => '',
+        :template_name => 'email_to_supportclient',
+	#wicky.en
         :cc       => carbon_copy
       )
     else
@@ -105,12 +135,13 @@ class HelpdeskMailer < ActionMailer::Base
         :cc            => carbon_copy
       )
     end
+
     # return mail object to deliver it
     return mail
   end
 
   private
-
+	
   # Appends a Redmine header field (name is prepended with 'X-Redmine-')
   def redmine_headers(h)
     h.each { |k,v| headers["X-Redmine-#{k}"] = v.to_s }
