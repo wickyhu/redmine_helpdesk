@@ -8,10 +8,7 @@ class HelpdeskMailer < ActionMailer::Base
 
   include Redmine::I18n
   include MacroExpander  
-  #wicky.sn
-  include ApplicationHelper
-  #wicky.en
-
+  
   # set the hostname for url_for helper
   def self.default_url_options
     { :host => Setting.host_name, :protocol => Setting.protocol }
@@ -19,6 +16,8 @@ class HelpdeskMailer < ActionMailer::Base
 
   # Sending email notifications to the supportclient
   def email_to_supportclient(issue, params)
+	Rails.logger.info "email_to_supportclient called"
+  
     # issue, recipient, journal=nil, text='', copy_to=nil
 
     recipient = params[:recipient]
@@ -61,28 +60,79 @@ class HelpdeskMailer < ActionMailer::Base
     if carbon_copy.nil?
       carbon_copy = issue.custom_value_for(ct).try(:value)
     end
+	
     # add any attachements
+=begin 
     if journal.present? && text.present?
       journal.details.each do |d|
         if d.property == 'attachment'
           a = Attachment.find(d.prop_key)
           begin
-	    #wicky.sn
-            #attachments[a.filename] = File.binread(a.diskfile)
-		    if ['image/png', 'image/jpg', 'image/gif', 'image/jpeg'].include? a.content_type
-              attachments.inline[a.filename] = File.read(a.diskfile)
-              image_url = attachments.inline[a.filename].url
-              text = text.gsub("!#{a.filename}!", "<img src='#{image_url}' />")
-            else
-              attachments[a.filename] = File.read(a.diskfile)
-            end
-	    #wicky.en
+            attachments[a.filename] = File.binread(a.diskfile)
           rescue
             # ignore rescue
           end
         end
       end
     end
+=end
+
+	#wicky.sn: insert inline image 
+	#def insert_inline_image(issue, journal)
+		#Rails.logger.info "insert_inline_image called"
+		image_list = ['image/png', 'image/jpg', 'image/gif', 'image/jpeg']
+		if issue.attachments.any? 
+			issue.attachments.each do |a|
+				begin
+				#Rails.logger.info "insert_inline_image: attachment=#{a.filename}"
+				image_tag = "!#{a.filename}!"
+				if (image_list.include? a.content_type) 				
+					if issue.description.present? && (issue.description.include? image_tag)
+						attachments.inline[a.filename] = File.read(a.diskfile)
+						image_url = attachments.inline[a.filename].url
+						issue.description = issue.description.gsub(image_tag, "<img src='#{image_url}' />")
+					else
+						if !journal.present? 
+							attachments[a.filename] = File.read(a.diskfile)
+						end
+					end
+					if journal.present? && journal.notes.present? && (journal.notes.include? image_tag)
+						attachments.inline[a.filename] = File.read(a.diskfile)
+						image_url = attachments.inline[a.filename].url
+						journal.notes = journal.notes.gsub(image_tag, "<img src='#{image_url}' />")
+					end
+				else
+					if !journal.present? 
+						attachments[a.filename] = File.read(a.diskfile)
+					end
+				end
+			  #rescue
+				# ignore rescue
+			  end
+			end
+		end		
+		if journal.present? && text.present?
+		  journal.details.each do |d|
+			if d.property == 'attachment'
+			  a = Attachment.find(d.prop_key)
+			  begin
+				image_tag = "!#{a.filename}!"
+				if (image_list.include? a.content_type) && (text.include? image_tag)
+				  attachments.inline[a.filename] = File.read(a.diskfile)
+				  image_url = attachments.inline[a.filename].url
+				  text = text.gsub(image_tag, "<img src='#{image_url}' />")
+				else 
+					attachments[a.filename] = File.read(a.diskfile)
+				end
+			  #rescue
+				# ignore rescue
+			  end
+			end
+		  end
+		end
+	#end
+	#wicky.en
+
     if @message_id_object
       headers[:message_id] = "<#{self.class.message_id_for(@message_id_object)}>"
     end

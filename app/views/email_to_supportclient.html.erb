@@ -1,5 +1,5 @@
 <style>a:link{color:#169} a:visited{color:#169} a:hover{color:#c61a1a} a:active{color:#c61a1a}</style>
-<%= raw(@body) %>
+<%= @body.html_safe %>
 <hr/>
 <% issue = @issue %>
 <% issue_url = @issue_url %>
@@ -14,6 +14,10 @@
 <li><strong>Assignee: </strong><%= issue.assigned_to %></li>
 <li><strong>Category: </strong><%= issue.category %></li>
 </ul>
+
+<% if !issue.description.nil? %>
+<%= issue.description.gsub("\r", "").gsub("\n", "<br/>").html_safe %>
+<% end %>
 
 <% if issue.attachments.any? %>
   <fieldset class="attachments"><legend><%= l(:label_attachment_plural) %></legend>
