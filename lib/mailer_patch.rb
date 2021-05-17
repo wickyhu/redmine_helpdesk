@@ -139,7 +139,8 @@ module RedmineHelpdesk
 				if !owner_email.blank? && !f.nil? && !p.nil? && p.custom_value_for(f).try(:value).blank?
 				  #wicky.sn
 				  #alternative_user = owner_email
-				  alternative_user = User.new({:firstname => "Anonymous", :lastname=>"User",:mail=>owner_email})
+				  #alternative_user = User.new({:firstname => owner_email, :lastname=>" ",:mail=>owner_email, :id => User.anonymous.id})
+				  alternative_user = User.anonymous
 				  #wicky.en
 				end
 			  end

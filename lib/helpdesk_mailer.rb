@@ -32,10 +32,10 @@ class HelpdeskMailer < ActionMailer::Base
     message_id issue
     references issue
 
-    #wicky.start
+    #wicky.sn
     #subject = "[#{issue.project.name} - ##{issue.id}] #{issue.subject}"
     subject = "[#{issue.project.name} - ##{issue.id}] (#{issue.status}) #{issue.subject}"
-    #wicky.end
+    #wicky.en
 	
     # Set 'from' email-address to 'helpdesk-sender-email' if available.
     # Falls back to regular redmine behaviour if 'sender' is empty.

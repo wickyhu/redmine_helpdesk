@@ -123,10 +123,8 @@ module RedmineHelpdesk
             carbon_copy = nil
           end
 
-	  #wicky.so: don't save additional info
-          #issue.description = email_details + issue.description
-          #issue.save
-	  #wicky.eo
+          issue.description = email_details + issue.description
+          issue.save
 		  
           custom_value = custom_field_value(issue,'User Email')
           if custom_value.value.to_s.strip.empty?
@@ -178,10 +176,8 @@ module RedmineHelpdesk
 
         # store email-details before each note
         last_journal = Journal.find(issue.last_journal_id)
-	#wicky.so: don't save additional info
-        #last_journal.notes = email_details + last_journal.notes
-        #last_journal.save
-	#wicky.eo
+        last_journal.notes = email_details + last_journal.notes
+        last_journal.save
 		
         return last_journal
       end
